@@ -21,6 +21,7 @@ async function DashboardPage(props: DashboardPageProps) {
   const user = await currentUser();
 
   const totalRevenue = await getTotalRevenue(storeId);
+
   const salesCount = await getSalesCount(storeId);
   const stockCount = await getStockCount(storeId);
   const graphRevenue = await getGraphRevenue(storeId);
@@ -44,7 +45,7 @@ async function DashboardPage(props: DashboardPageProps) {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {formatter.format(totalRevenue)}
+                {formatter.format(Number(totalRevenue))}
               </div>
             </CardContent>
           </Card>{" "}

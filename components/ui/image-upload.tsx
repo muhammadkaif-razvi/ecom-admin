@@ -27,7 +27,10 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
   }, []);
 
   const onUpload = (result: any) => {
-    onChange(result.info.secure_url);
+    const secureUrl = result?.info?.secure_url || (typeof result.info === "string" ? result.info : undefined);
+    if (secureUrl) {
+      onChange(secureUrl);
+    }
   };
 
   if (!isMounted) return null;

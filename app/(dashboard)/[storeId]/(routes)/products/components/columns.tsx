@@ -15,7 +15,7 @@ export type ProductColumn = {
   isNewLaunch: boolean;
   isBestseller: boolean;
   variantName: string;
-  variantPrice: string;
+  variantPrice:  string;
   variantQuantity: string;
   createdAt: string;
 };

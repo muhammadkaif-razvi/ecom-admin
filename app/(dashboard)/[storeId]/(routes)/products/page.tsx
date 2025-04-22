@@ -30,16 +30,12 @@ const ProductsPage = async ({
     name: item.name,
     description: item.description,
 
-    variantName: item?.variants
-      .map((variant: { name: any }) => variant.name)
-      .join(", "),
+    variantName: item?.variants.map((variant) => variant.name).join(", "),
     variantPrice: item?.variants
-      .map((variant: { price: any }) =>
-        formatter.format(variant.price.toNumber() || 0)
-      )
+      .map((variant) => formatter.format(variant.price.toNumber() || 0))
       .join(", "),
     variantQuantity: item?.variants
-      .map((variant: { variantsepQuant: any }) => variant.variantsepQuant)
+      .map((variant) => variant.variantsepQuant)
       .join(", "),
     hasVariants: item.variants.length > 0,
     isFeatured: item.isFeatured,

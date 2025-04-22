@@ -29,14 +29,15 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
   }, []);
 
   const onUpload = (result: any) => {
-    if (result?.info?.secure_url) {
+    const secureUrl = result?.info?.secure_url;
+    if (secureUrl) {
       // Call onChange with full array for multiple images
       if (!single) {
-        onChange({ url: result.info.secure_url }); // Will be handled in parent
+        onChange({ url: secureUrl }); // Will be handled in parent
       } else {
         // Replace if single
         onRemove(value[0]?.url);
-        onChange({ url: result.info.secure_url });
+        onChange({ url: secureUrl });
       }
     }
   };
