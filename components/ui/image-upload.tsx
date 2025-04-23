@@ -1,9 +1,14 @@
 "use client";
-import { useEffect, useState } from "react";
+
+import { useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { ImagePlus, Trash } from "lucide-react";
-import { CldUploadWidget } from "next-cloudinary";
 import Image from "next/image";
+import {
+  CldUploadWidget,
+  CloudinaryUploadWidgetResults,
+  
+} from "next-cloudinary";
 
 interface ImageUploadProps {
   disabled?: boolean;
@@ -21,16 +26,43 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
   maxFiles = 6,
 }) => {
   const [isMounted, setIsMounted] = useState(false);
+  const [isWidgetOpen, setIsWidgetOpen] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
-
-  const onUpload = (result: any) => {
-    const secureUrl = result?.info?.secure_url || (typeof result.info === "string" ? result.info : undefined);
-    if (secureUrl) {
-      onChange(secureUrl);
+    // Apply overflow: hidden when the widget is open
+    if (isWidgetOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = ""; // Revert to default
     }
+    // Cleanup function to ensure overflow is reset on unmount
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isWidgetOpen]);
+
+  const onUploadDebug = useCallback(
+    (result: CloudinaryUploadWidgetResults) => {
+      const secureUrl =
+        typeof result.info === "object" ? result.info.secure_url : undefined;
+      if (secureUrl) {
+        console.log("Uploaded URL:", secureUrl);
+        onChange(secureUrl);
+      } else {
+        console.error("Upload failed: secure_url is undefined");
+      }
+      setIsWidgetOpen(false); // Widget closed after successful upload
+    },
+    [onChange, setIsWidgetOpen]
+  );
+
+  const handleOpenWidget = useCallback(() => {
+    setIsWidgetOpen(true);
+  }, [setIsWidgetOpen]);
+
+  const handleRemove = (url: string): void => {
+    onRemove(url); // Call onRemove callback when removing the image
   };
 
   if (!isMounted) return null;
@@ -39,14 +71,11 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
     <div>
       <div className="mb-4 flex items-center gap-4 flex-wrap">
         {value.map((url) => (
-          <div
-            key={url}
-            className="relative w-[200px] h-[200px] rounded-md overflow-hidden"
-          >
+          <div key={url} className="relative w-[200px] h-[200px] rounded-md ">
             <div className="z-10 absolute top-2 right-2">
               <Button
                 type="button"
-                onClick={() => onRemove(url)}
+                onClick={() => handleRemove(url)}
                 variant="destructive"
                 size="icon"
                 disabled={disabled}
@@ -60,27 +89,30 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
                 width={200}
                 className="object-cover"
                 alt="Uploaded image"
-                src={url}
+                src={url} // Use dynamic src here
               />
             ) : null}
           </div>
         ))}
       </div>
       {value.length < maxFiles && (
-        <CldUploadWidget onUpload={onUpload} uploadPreset="sjiyx6o3">
-          {({ open }) => {
-            return (
-              <Button
-                type="button"
-                disabled={disabled}
-                variant="secondary"
-                onClick={() => open()}
-              >
-                <ImagePlus className="h-4 w-4 mr-2" />
-                Upload Image
-              </Button>
-            );
-          }}
+        <CldUploadWidget
+          onUpload={onUploadDebug}
+          uploadPreset="sjiyx6o3"
+          onOpen={handleOpenWidget} // Track when widget opens
+          onClose={() => setIsWidgetOpen(false)} // Track when widget closes (if available)
+        >
+          {({ open }) => (
+            <Button
+              type="button"
+              disabled={disabled}
+              variant="secondary"
+              onClick={() => open()}
+            >
+              <ImagePlus className="h-4 w-4 mr-2" />
+              Choose Image
+            </Button>
+          )}
         </CldUploadWidget>
       )}
     </div>
