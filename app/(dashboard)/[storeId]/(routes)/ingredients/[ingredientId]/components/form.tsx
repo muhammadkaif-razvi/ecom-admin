@@ -25,7 +25,6 @@ import { useSession } from "next-auth/react";
 import { AlertModal } from "@/components/modals/alert-modal";
 import { ImageUpload } from "@/components/ui/image-upload-product";
 
-
 interface ingredientFormProps {
   initialData: Ingredient | null;
 }
@@ -139,10 +138,19 @@ export const IngredientForm: React.FC<ingredientFormProps> = ({
                 <FormLabel>Ingredient Image</FormLabel>
                 <FormControl>
                   <ImageUpload
-                    value={field.value ? field.value.map((item: { url: string }) => item) : []}
+                    value={
+                      field.value
+                        ? field.value.map((item: { url: string }) => item)
+                        : []
+                    }
                     disabled={loading}
                     onChange={(url) => field.onChange(url)}
-                    onRemove={() => field.onChange("")}
+                    onRemove={(urlToRemove) => {
+                      const updatedValue = (field.value || []).filter(
+                        (img) => img.url !== urlToRemove
+                      );
+                      field.onChange(updatedValue);
+                    }}
                     maxFiles={3}
                   />
                 </FormControl>
@@ -151,7 +159,7 @@ export const IngredientForm: React.FC<ingredientFormProps> = ({
             )}
           />
           <div className="grid grid-cols-3 gap-8">
-          <FormField
+            <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
@@ -167,23 +175,24 @@ export const IngredientForm: React.FC<ingredientFormProps> = ({
                   <FormMessage />
                 </FormItem>
               )}
-            />   <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Ingredient Description</FormLabel>
-                <FormControl>
-                  <Input
-                    disabled={loading}
-                    placeholder="ingredient description"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            />{" "}
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Ingredient Description</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={loading}
+                      placeholder="ingredient description"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
           <Button disabled={loading} className="ml-auto" type="submit">
             {action}

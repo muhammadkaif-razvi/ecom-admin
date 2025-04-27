@@ -173,7 +173,11 @@ export const VariantForm: React.FC<variantFormProps> = ({
                 <FormControl>
                   <ImageUpload
                     disabled={loading}
-                    value={field.value || []}
+                    value={
+                      field.value
+                        ? field.value.map((item: { url: string }) => item)
+                        : []
+                    }
                     onChange={(newUrls) => field.onChange(newUrls)} // Pass the array directly
                     onRemove={(urlToRemove) => {
                       const updatedValue = (field.value || []).filter(
