@@ -3,11 +3,11 @@ import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 export async function GET(
-  req: Request,
-  { params }: { params: { variantId: string } }
+  _req: Request,
+  { params }: { params: Promise<{ storeId: string; variantId: string }> }
 ) {
   try {
-    const { variantId } = params;
+    const { variantId } =  await params;
     if (!variantId) {
       return new NextResponse("variant ID is required", { status: 400 });
     }

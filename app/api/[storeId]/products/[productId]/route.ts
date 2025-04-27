@@ -4,10 +4,10 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   req: Request,
-  { params }: { params: { productId: string } } // Fixed: Remove Promise wrapper
+  { params }: { params: Promise<{ productId: string }> }
 ) {
   try {
-    const { productId } = await params; // Direct destructuring
+    const { productId } = await params;
 
     if (!productId) {
       return new NextResponse("Product ID is required", { status: 400 });
