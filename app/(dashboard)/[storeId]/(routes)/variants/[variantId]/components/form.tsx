@@ -6,7 +6,7 @@ import { variantformSchema } from "@/schemas";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "react-hot-toast";
 import axios from "axios";
@@ -32,7 +32,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { ImageUpload } from "@/components/ui/image-upload-product";
-import MultipleSelector, { Option } from "@/components/ui/multiple-selector";
+import MultipleSelector from "@/components/ui/multiple-selector";
 interface variantFormProps {
   initialData:
     | (Variant & {

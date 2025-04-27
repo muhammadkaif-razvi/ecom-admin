@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   req: Request,
-  { params }: { params: { variantId: string } } 
+  { params }: { params: { variantId: string } }
 ) {
   try {
     const { variantId } = params;
@@ -41,26 +41,31 @@ export async function PATCH(
     const { storeId } = await params;
     const { variantId } = await params;
     const body = await req.json();
-    
+
     const {
-      name, 
-      images, 
-      price, 
-      productId, 
-      variantsepQuant, 
-      inventory, 
-      ingredients
+      name,
+      images,
+      price,
+      productId,
+      variantsepQuant,
+      inventory,
+      ingredients,
     } = body;
 
     // Validation
     if (!userId) return new NextResponse("Unauthenticated", { status: 401 });
     if (!name) return new NextResponse("Name is required", { status: 400 });
     if (!price) return new NextResponse("Price is required", { status: 400 });
-    if (!variantsepQuant) return new NextResponse("Quantity is required", { status: 400 });
-    if (inventory === undefined) return new NextResponse("Inventory is required", { status: 400 });
-    if (!productId) return new NextResponse("Product is required", { status: 400 });
-    if (!images?.length) return new NextResponse("Images are required", { status: 400 });
-    if (!variantId) return new NextResponse("Variant ID is required", { status: 400 });
+    if (!variantsepQuant)
+      return new NextResponse("Quantity is required", { status: 400 });
+    if (inventory === undefined)
+      return new NextResponse("Inventory is required", { status: 400 });
+    if (!productId)
+      return new NextResponse("Product is required", { status: 400 });
+    if (!images?.length)
+      return new NextResponse("Images are required", { status: 400 });
+    if (!variantId)
+      return new NextResponse("Variant ID is required", { status: 400 });
 
     // Authorization
     const storeByUserId = await db.store.findFirst({
@@ -69,7 +74,7 @@ export async function PATCH(
         userId,
       },
     });
-    
+
     if (!storeByUserId) {
       return new NextResponse("Unauthorized", { status: 403 });
     }
@@ -87,7 +92,7 @@ export async function PATCH(
         productId,
         variantsepQuant,
         inventory,
-            
+        ingredients,
       },
     });
     const variant = await db.variant.update({
@@ -98,7 +103,7 @@ export async function PATCH(
         images: {
           create: images.map((image: { url: string }) => ({
             url: image.url,
-            productId: productId, 
+            productId: productId,
           })),
         },
       },

@@ -73,11 +73,11 @@ export async function POST(
         images: {
           create: images.map((image: { url: string }) => ({
             url: image.url,
-            productId: productId, 
+            productId: productId,
           })),
         },
         ingredients: {
-          connect: ingredients?.map((id: any) => ({ id })) || [],
+          connect: ingredients?.map((id: string) => ({ id })) || [],
         },
 
         storeId,

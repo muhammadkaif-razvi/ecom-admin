@@ -8,7 +8,6 @@ import {
   CldUploadWidget,
   CloudinaryUploadWidgetResults,
 } from "next-cloudinary";
-import { StaticImport } from "next/dist/shared/lib/get-img-props";
 
 interface ImageUploadProps {
   disabled?: boolean;
