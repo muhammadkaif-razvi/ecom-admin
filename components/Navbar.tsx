@@ -51,7 +51,7 @@ export const Navbar = () => {
       <div className="container mx-auto flex items-center justify-between p-5 px-6 py-2 lg:py-4  sm:py-3 ">
         <Link href="/">
           <Image
-            src="/letter-case-k-alphabet-photography-k.jpg"
+            src="/vercel.svg"
             alt="logo"
             width={35}
             height={35}

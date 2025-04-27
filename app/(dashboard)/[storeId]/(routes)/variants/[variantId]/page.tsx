@@ -4,7 +4,7 @@ import { VariantForm } from "./components/form";
 interface variantProps {
   params: Promise<{ variantId: string; storeId: string }>;
 }
-const variantPage = async (props: variantProps) => {
+const variantPages = async (props: variantProps) => {
   const { variantId, storeId } = await props.params;
 
   const variant = await db.variant.findUnique({
@@ -13,6 +13,7 @@ const variantPage = async (props: variantProps) => {
     },
     include: {
       images: true,
+      ingredients: true,
     },
   });
 
@@ -21,15 +22,22 @@ const variantPage = async (props: variantProps) => {
       storeId,
     },
   });
-
+  const ingredients = await db.ingredient.findMany({
+    where: {
+      storeId,
+    },
+  });
 
   return (
     <div className="mt-8 flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6 ">
         <VariantForm
-          products={products} initialData={variant}        />
+          products={products}
+          initialData={variant}
+          ingredients={ingredients}
+        />
       </div>
     </div>
   );
 };
-export default variantPage;
+export default variantPages;

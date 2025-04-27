@@ -16,6 +16,7 @@ export async function GET(
       where: { id: variantId },
       include: {
         images: true,
+        ingredients: true,
       },
     });
 
@@ -40,44 +41,35 @@ export async function PATCH(
     const { storeId } = await params;
     const { variantId } = await params;
     const body = await req.json();
-    const {
-      name, images, price, productId, variantsepQuant, inventory
     
+    const {
+      name, 
+      images, 
+      price, 
+      productId, 
+      variantsepQuant, 
+      inventory, 
+      ingredients
     } = body;
 
-    if (!userId) {
-      return new NextResponse("Unauthanticated", { status: 401 });
-    }
+    // Validation
+    if (!userId) return new NextResponse("Unauthenticated", { status: 401 });
+    if (!name) return new NextResponse("Name is required", { status: 400 });
+    if (!price) return new NextResponse("Price is required", { status: 400 });
+    if (!variantsepQuant) return new NextResponse("Quantity is required", { status: 400 });
+    if (inventory === undefined) return new NextResponse("Inventory is required", { status: 400 });
+    if (!productId) return new NextResponse("Product is required", { status: 400 });
+    if (!images?.length) return new NextResponse("Images are required", { status: 400 });
+    if (!variantId) return new NextResponse("Variant ID is required", { status: 400 });
 
-    if (!name) {
-      return new NextResponse("name is required", { status: 400 });
-    }
-    if (!price) {
-      return new NextResponse("price is required", { status: 400 });
-    }   if (!variantsepQuant) {
-      return new NextResponse("quantity is required", { status: 400 });
-    }   if (!inventory) {
-      return new NextResponse("inventory is required", { status: 400 });
-    }
-    
-    if (!productId) {
-      return new NextResponse("product is required", { status: 400 });
-    }
-
-    if (!images || !images.length) {
-      return new NextResponse("images  is required", { status: 400 });
-    }
-
-    if (!variantId) {
-      return new NextResponse("variant id is required", { status: 400 });
-    }
-
+    // Authorization
     const storeByUserId = await db.store.findFirst({
       where: {
         id: storeId,
         userId,
       },
     });
+    
     if (!storeByUserId) {
       return new NextResponse("Unauthorized", { status: 403 });
     }
@@ -104,12 +96,14 @@ export async function PATCH(
       },
       data: {
         images: {
-          createMany: {
-            data: [...images.map((image: { url: string }) => image)],
-          },
+          create: images.map((image: { url: string }) => ({
+            url: image.url,
+            productId: productId, 
+          })),
         },
       },
     });
+
     return NextResponse.json(variant);
   } catch (error) {
     console.log("[variantS_PATCH]", error);

@@ -93,9 +93,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({
     defaultValues: initialData
       ? {
           ...initialData,
-          // basePrice: initialData.basePrice
-          //   ? String(initialData.basePrice)
-          //   : undefined,
+          images: initialData.images
+            .flat() // Flatten the array if it is nested
+            .map((image) => ({ url: image.url })), // Transform to { url: string }[]
           faceId: initialData.faceId ?? undefined,
           hairId: initialData.hairId ?? undefined,
           makeupId: initialData.makeupId ?? undefined,
@@ -107,7 +107,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
         }
       : {
           name: "",
-          images: [],
+          images: [], // Default to an empty array of { url: string }[]
           description: "",
           categoryId: "",
           faceId: "",
@@ -202,16 +202,15 @@ export const ProductForm: React.FC<ProductFormProps> = ({
               <FormItem>
                 <FormLabel>Product Images</FormLabel>
                 <FormControl>
-                <ImageUpload
+                  <ImageUpload
+                    disabled={loading}
                     value={field.value || []}
-                    disabled={loading} // Use the form's loading state
-                    onChange={(image) => {
-                      field.onChange([...(field.value || []), image]);
-                    }}
-                    onRemove={(url) => {
-                      field.onChange(
-                        (field.value || []).filter((img) => img.url !== url)
+                    onChange={(newUrls) => field.onChange(newUrls)} // Pass the array directly
+                    onRemove={(urlToRemove) => {
+                      const updatedValue = (field.value || []).filter(
+                        (img) => img.url !== urlToRemove
                       );
+                      field.onChange(updatedValue);
                     }}
                     maxFiles={6}
                   />
@@ -238,8 +237,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                 </FormItem>
               )}
             />
-       
-        
             <FormField
               control={form.control}
               name="description"

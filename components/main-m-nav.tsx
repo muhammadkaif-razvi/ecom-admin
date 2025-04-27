@@ -91,20 +91,32 @@ export function MobileNav() {
       active: pathname === `/${params.storeId}/hairs`,
     },
     {
+      href: `/${params.storeId}/makeups`,
+      label: "Makeup Filter",
+      active: pathname === `/${params.storeId}/makeups`,
+    },
+
+    {
       href: `/${params.storeId}/bodys`,
       label: "Body Filter",
       active: pathname === `/${params.storeId}/bodys`,
     },
     {
-      href: `/${params.storeId}/ingredients`,
-      label: "Ingredients Filter",
-      active: pathname === `/${params.storeId}/ingredients`,
+      href: `/${params.storeId}/combos`,
+      label: "Combos Filter",
+      active: pathname === `/${params.storeId}/combos`,
     },
     {
       href: `/${params.storeId}/fragrances`,
       label: "Fragrances Filter",
       active: pathname === `/${params.storeId}/fragrances`,
     },
+    {
+      href: `/${params.storeId}/ingredients`,
+      label: "Ingredients Filter",
+      active: pathname === `/${params.storeId}/ingredients`,
+    },
+
     {
       href: `/${params.storeId}/prices`,
       label: "Prices Filter",
@@ -114,7 +126,8 @@ export function MobileNav() {
       href: `/${params.storeId}/products`,
       label: "products",
       active: pathname === `/${params.storeId}/products`,
-    }  ,  {
+    },
+    {
       href: `/${params.storeId}/variants`,
       label: "Variants",
       active: pathname === `/${params.storeId}/variants`,

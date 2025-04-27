@@ -7,7 +7,7 @@ export async function GET(
   { params }: { params: { productId: string } } // Fixed: Remove Promise wrapper
 ) {
   try {
-    const { productId } = params; // Direct destructuring
+    const { productId } = await params; // Direct destructuring
 
     if (!productId) {
       return new NextResponse("Product ID is required", { status: 400 });

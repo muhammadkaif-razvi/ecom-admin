@@ -16,7 +16,8 @@ const variantsPage = async ({
     },
     include: {
       images: true,
-      product: true, 
+      product: true,
+      ingredients: true, 
     },
     orderBy: {
       createdAt: "desc",
@@ -27,12 +28,11 @@ const variantsPage = async ({
     images: item.images.map((image) => image.url),
     id: item.id,
     name: item.name,
-    quantity: item?.variantsepQuant,
+    quantity: item?.variantsepQuant ? String(item.variantsepQuant) : "0",
     price: formatter.format(item.price?.toNumber() || 0),
     stock: String(item?.inventory ?? "N/A"),
-
     productname: item.product?.name || "Unknown Product",
-
+    ingredients: item.ingredients.map((ingredient) => ingredient.name),
     createdAt: format(item.createdAt, "MMMM do, yyyy"),
   }));
 

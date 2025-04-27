@@ -1,12 +1,12 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
-import { Image, Product, Variant } from "@prisma/client";
+import { Image, Ingredient, Product, Variant } from "@prisma/client";
 import { variantformSchema } from "@/schemas";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "react-hot-toast";
 import axios from "axios";
@@ -32,13 +32,16 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { ImageUpload } from "@/components/ui/image-upload-product";
-
+import MultipleSelector, { Option } from "@/components/ui/multiple-selector";
 interface variantFormProps {
   initialData:
     | (Variant & {
         images: Image[];
+        ingredients: Ingredient[];
       })
     | null;
+  ingredients: Ingredient[];
+
   products: Product[];
 }
 
@@ -47,35 +50,46 @@ type variantFormValues = z.infer<typeof variantformSchema>;
 export const VariantForm: React.FC<variantFormProps> = ({
   initialData,
   products,
+  ingredients,
 }) => {
   const params = useParams();
   const router = useRouter();
   const { update } = useSession();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-
   const title = initialData ? "Edit variant" : "Create variant";
   const description = initialData ? "Edit a variant" : "Add a new variant";
   const toastMessage = initialData ? "variant updated" : "variant created";
   const action = initialData ? "Save changes" : "Create";
+
+  const ingredientOptions = ingredients.map((ingredient) => ({
+    label: ingredient.name,
+    value: ingredient.id,
+  }));
 
   const form = useForm<variantFormValues>({
     resolver: zodResolver(variantformSchema),
     defaultValues: initialData
       ? {
           ...initialData,
+          images: initialData.images
+            .flat()
+            .map((image) => ({ url: image.url })),
+          ingredients: initialData.ingredients?.map((ing) => ing.id) || [],
           price: parseFloat(String(initialData.price)),
           inventory: parseFloat(String(initialData.inventory)),
         }
       : {
           name: "",
           images: [],
+          ingredients: [],
           variantsepQuant: "",
           price: 0,
           inventory: 0,
-          productId:'0a8d6fdf-6d23-45dd-a512-a6ac8ef331b9',
+          productId: "",
         },
   });
+
   const onSubmit = async (values: variantFormValues) => {
     try {
       setLoading(true);
@@ -95,8 +109,10 @@ export const VariantForm: React.FC<variantFormProps> = ({
       toast.error("Something went wrong.");
     } finally {
       setLoading(false);
+      /*************  ✨ Windsurf Command 🌟  *************/
     }
   };
+
   const onDelete = async () => {
     try {
       setLoading(true);
@@ -111,6 +127,7 @@ export const VariantForm: React.FC<variantFormProps> = ({
       );
     } finally {
       setLoading(false);
+
       setOpen(false);
     }
   };
@@ -155,17 +172,16 @@ export const VariantForm: React.FC<variantFormProps> = ({
                 <FormLabel>variant Images</FormLabel>
                 <FormControl>
                   <ImageUpload
+                    disabled={loading}
                     value={field.value || []}
-                    disabled={loading} // Use the form's loading state
-                    onChange={(image) => {
-                      field.onChange([...(field.value || []), image]);
-                    }}
-                    onRemove={(url) => {
-                      field.onChange(
-                        (field.value || []).filter((img) => img.url !== url)
+                    onChange={(newUrls) => field.onChange(newUrls)} // Pass the array directly
+                    onRemove={(urlToRemove) => {
+                      const updatedValue = (field.value || []).filter(
+                        (img) => img.url !== urlToRemove
                       );
+                      field.onChange(updatedValue);
                     }}
-                    maxFiles={6}
+                    maxFiles={2}
                   />
                 </FormControl>
                 <FormMessage />
@@ -234,7 +250,7 @@ export const VariantForm: React.FC<variantFormProps> = ({
                   <FormLabel>Stock variant or product</FormLabel>
                   <FormControl>
                     <Input
-                    type="number"
+                      type="number"
                       disabled={loading}
                       placeholder="variant Description"
                       value={field.value ?? ""}
@@ -294,7 +310,34 @@ export const VariantForm: React.FC<variantFormProps> = ({
                 </FormItem>
               )}
             />{" "}
- 
+            <FormField
+              control={form.control}
+              name="ingredients"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Ingredients</FormLabel>
+                  <FormControl>
+                    <MultipleSelector
+                      options={ingredientOptions}
+                      value={ingredientOptions.filter((option) =>
+                        field.value?.includes(option.value)
+                      )}
+                      onChange={(selected) => {
+                        field.onChange(selected.map((option) => option.value));
+                      }}
+                      placeholder="Select ingredients"
+                      emptyIndicator={
+                        <p className="text-center text-muted-foreground">
+                          No ingredients found
+                        </p>
+                      }
+                      disabled={loading}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
           <Button disabled={loading} className="ml-auto" type="submit">
             {action}

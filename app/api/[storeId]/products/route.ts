@@ -13,9 +13,9 @@ export async function POST(
     const body = await req.json();
     const {
       name,
-   
+
       description,
-  
+
       images,
       categoryId,
       faceId,

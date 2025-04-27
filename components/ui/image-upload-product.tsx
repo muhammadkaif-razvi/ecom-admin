@@ -1,111 +1,3 @@
-// "use client";
-// import { useEffect, useState } from "react";
-// import { Button } from "@/components/ui/button";
-// import { ImagePlus, Trash } from "lucide-react";
-// import { CldUploadWidget } from "next-cloudinary";
-// import Image from "next/image";
-
-// interface ImageUploadProps {
-//   disabled?: boolean;
-//   onChange: (value: { url: string }) => void;
-//   onRemove: (url: string | undefined) => void;
-//   value: { url: string }[];
-//   maxFiles?: number;
-//   single?: boolean;
-// }
-
-// export const ImageUpload: React.FC<ImageUploadProps> = ({
-//   disabled,
-//   onChange,
-//   onRemove,
-//   value = [],
-//   maxFiles = 6,
-//   single = false,
-// }) => {
-//   const [isMounted, setIsMounted] = useState(false);
-
-//   useEffect(() => {
-//     setIsMounted(true);
-//   }, []);
-
-//   const onUpload = (result) => {
-//     const secureUrl = result?.info?.secure_url;
-//     if (secureUrl) {
-//       // Call onChange with full array for multiple images
-//       if (!single) {
-//         onChange({ url: secureUrl }); // Will be handled in parent
-//       } else {
-//         // Replace if single
-//         onRemove(value[0]?.url);
-//         onChange({ url: secureUrl });
-//       }
-//     }
-//   };
-  
-
-//   if (!isMounted) return null;
-
-//   const canUploadMore = single ? value.length === 0 : value.length < maxFiles;
-
-//   return (
-//     <div>
-//       <div className="mb-4 flex items-center gap-4 flex-wrap">
-//         {value.map((image) => (
-//           <div
-//             key={image.url}
-//             className="relative w-[200px] h-[200px] rounded-md overflow-hidden"
-//           >
-//             <div className="z-10 absolute top-2 right-2">
-//               <Button
-//                 type="button"
-//                 onClick={() => onRemove(image.url)}
-//                 variant="destructive"
-//                 size="icon"
-//                 disabled={disabled}
-//               >
-//                 <Trash className="h-4 w-4" />
-//               </Button>
-//             </div>
-//             <Image
-//               fill
-//               className="object-cover"
-//               alt="Uploaded image"
-//               src={image.url}
-//             />
-//           </div>
-//         ))}
-//       </div>
-//       {canUploadMore && (
-//         <CldUploadWidget onUpload={onUpload} uploadPreset="sjiyx6o3">
-//           {({ open }) => {
-//             const handleClick = () => {
-//               if (single && value.length > 0) {
-//                 onRemove(value[0].url);
-//               }
-//               open();
-//             };
-
-//             return (
-//               <Button
-//                 type="button"
-//                 disabled={disabled}
-//                 variant="secondary"
-//                 onClick={handleClick}
-//               >
-//                 <ImagePlus className="h-4 w-4 mr-2" />
-//                 {single
-//                   ? value.length
-//                     ? "Replace Image"
-//                     : "Upload Image"
-//                   : "Upload Image"}
-//               </Button>
-//             );
-//           }}
-//         </CldUploadWidget>
-//       )}
-//     </div>
-//   );
-// };
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
@@ -115,14 +7,14 @@ import Image from "next/image";
 import {
   CldUploadWidget,
   CloudinaryUploadWidgetResults,
-  
 } from "next-cloudinary";
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
 
 interface ImageUploadProps {
   disabled?: boolean;
-  onChange: (value: string) => void;
-  onRemove: (value: string) => void;
-  value: string[];
+  onChange: (value: { url: string }[]) => void; // Changed onChange to expect an array
+  onRemove: (url: string) => void; // Changed onRemove to expect the URL to remove
+  value: { url: string }[];
   maxFiles?: number;
 }
 
@@ -138,13 +30,11 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
 
   useEffect(() => {
     setIsMounted(true);
-    // Apply overflow: hidden when the widget is open
     if (isWidgetOpen) {
       document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = ""; // Revert to default
+      document.body.style.overflow = "";
     }
-    // Cleanup function to ensure overflow is reset on unmount
     return () => {
       document.body.style.overflow = "";
     };
@@ -156,34 +46,44 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
         typeof result.info === "object" ? result.info.secure_url : undefined;
       if (secureUrl) {
         console.log("Uploaded URL:", secureUrl);
-        onChange(secureUrl);
+        // Update to pass the new URL to the onChange prop as part of an array
+        onChange([...value, { url: secureUrl }]);
       } else {
         console.error("Upload failed: secure_url is undefined");
       }
       setIsWidgetOpen(false); // Widget closed after successful upload
     },
-    [onChange, setIsWidgetOpen]
+    [onChange, setIsWidgetOpen, value]
   );
 
   const handleOpenWidget = useCallback(() => {
     setIsWidgetOpen(true);
   }, [setIsWidgetOpen]);
 
-  const handleRemove = (url: string): void => {
-    onRemove(url); // Call onRemove callback when removing the image
-  };
+  const handleRemove = useCallback(
+    (urlToRemove: string): void => {
+      // Filter out the image to remove and call onRemove
+      const updatedValue = value.filter((img) => img.url !== urlToRemove);
+      onChange(updatedValue);
+      onRemove(urlToRemove); // Optionally call the onRemove prop for external logic
+    },
+    [onChange, onRemove, value]
+  );
 
   if (!isMounted) return null;
 
   return (
     <div>
       <div className="mb-4 flex items-center gap-4 flex-wrap">
-        {value.map((url) => (
-          <div key={url} className="relative w-[200px] h-[200px] rounded-md ">
+        {value.map((image) => (
+          <div
+            key={image.url}
+            className="relative w-[200px] h-[200px] rounded-md "
+          >
             <div className="z-10 absolute top-2 right-2">
               <Button
                 type="button"
-                onClick={() => handleRemove(url)}
+                onClick={() => handleRemove(image.url)}
                 variant="destructive"
                 size="icon"
                 disabled={disabled}
@@ -191,13 +91,13 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
                 <Trash className="h-4 w-4" />
               </Button>
             </div>
-            {url ? (
+            {image.url ? (
               <Image
                 height={200}
                 width={200}
                 className="object-cover"
                 alt="Uploaded image"
-                src={url} // Use dynamic src here
+                src={image.url}
               />
             ) : null}
           </div>
@@ -205,7 +105,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
       </div>
       {value.length < maxFiles && (
         <CldUploadWidget
-          onSuccess={onUploadDebug}
+          onUpload={onUploadDebug}
           uploadPreset="sjiyx6o3"
           onOpen={handleOpenWidget} // Track when widget opens
           onClose={() => setIsWidgetOpen(false)} // Track when widget closes (if available)

@@ -11,7 +11,15 @@ export async function POST(
     const userId = user?.id;
     const { storeId } = await params;
     const body = await req.json();
-    const { name, images, price, productId, variantsepQuant, inventory } = body;
+    const {
+      name,
+      images,
+      price,
+      productId,
+      variantsepQuant,
+      inventory,
+      ingredients,
+    } = body;
 
     if (!userId) {
       return new NextResponse("Unauthanticated", { status: 401 });
@@ -38,6 +46,12 @@ export async function POST(
     if (!storeId) {
       return new NextResponse("Store Idis required", { status: 400 });
     }
+    if (!inventory) {
+      return new NextResponse("inventory is required", { status: 400 });
+    }
+    if (!ingredients || !ingredients.length) {
+      return new NextResponse("ingredients is required", { status: 400 });
+    }
 
     const storeByUserId = await db.store.findFirst({
       where: {
@@ -59,8 +73,11 @@ export async function POST(
         images: {
           create: images.map((image: { url: string }) => ({
             url: image.url,
-            productId: productId, // Add productId here for the Image records
+            productId: productId, 
           })),
+        },
+        ingredients: {
+          connect: ingredients?.map((id: any) => ({ id })) || [],
         },
 
         storeId,
@@ -94,6 +111,7 @@ export async function GET(
       },
       include: {
         images: true,
+        ingredients: true,
       },
       orderBy: {
         createdAt: "desc",

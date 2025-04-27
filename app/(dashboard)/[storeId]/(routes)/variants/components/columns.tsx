@@ -12,6 +12,7 @@ export type variantColumn = {
   stock:string;
   productname:string;
   createdAt: string;
+  ingredients: string[];
 };
 
 export const columns: ColumnDef<variantColumn>[] = [
@@ -48,6 +49,25 @@ export const columns: ColumnDef<variantColumn>[] = [
   {
     accessorKey: "productname",
     header: "Product",
+  },
+  {
+    accessorKey: "ingredients",
+    header: "Ingredients",
+    cell: ({ row }) => {
+      const ingredients = row.original.ingredients
+      return (
+        <div className="flex flex-wrap gap-1 max-w-[200px]">
+          {ingredients.map((ingredient, index) => (
+            <span 
+              key={index}
+              className="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600"
+            >
+              {ingredient}
+            </span>
+          ))}
+        </div>
+      );
+    },
   },
 
   // {

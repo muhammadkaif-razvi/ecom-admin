@@ -23,7 +23,8 @@ import { Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { AlertModal } from "@/components/modals/alert-modal";
-import { ImageUpload } from "@/components/ui/image-upload";
+import { ImageUpload } from "@/components/ui/image-upload-product";
+
 
 interface ingredientFormProps {
   initialData: Ingredient | null;
@@ -142,7 +143,7 @@ export const IngredientForm: React.FC<ingredientFormProps> = ({
                     disabled={loading}
                     onChange={(url) => field.onChange(url)}
                     onRemove={() => field.onChange("")}
-                    single={true}
+                    maxFiles={1}
                   />
                 </FormControl>
                 <FormMessage />
