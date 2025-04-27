@@ -139,7 +139,7 @@ export const IngredientForm: React.FC<ingredientFormProps> = ({
                 <FormLabel>Ingredient Image</FormLabel>
                 <FormControl>
                   <ImageUpload
-                    value={field.value ? [field.value] : []}
+                    value={field.value ? [{ url: field.value }] : []}
                     disabled={loading}
                     onChange={(url) => field.onChange(url)}
                     onRemove={() => field.onChange("")}
