@@ -53,7 +53,7 @@ export const IngredientForm: React.FC<ingredientFormProps> = ({
     resolver: zodResolver(ingredientFormSchema),
     defaultValues: initialData || {
       name: "",
-      image: "",
+      images: [],
       description: "",
     },
   });
@@ -133,13 +133,13 @@ export const IngredientForm: React.FC<ingredientFormProps> = ({
         >
           <FormField
             control={form.control}
-            name="image"
+            name="images"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Ingredient Image</FormLabel>
                 <FormControl>
                   <ImageUpload
-                    value={field.value ? [{ url: field.value }] : []}
+                    value={field.value ? field.value.map((item: { url: string }) => item) : []}
                     disabled={loading}
                     onChange={(url) => field.onChange(url)}
                     onRemove={() => field.onChange("")}
