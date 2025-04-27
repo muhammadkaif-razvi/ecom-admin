@@ -63,7 +63,7 @@ export async function POST(
   }
 
   const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
-  const orderItemsData: any[] = []; // To store data for order item creation
+  const orderItemsData: { productId: string; variantId: string; quantity: number }[] = [];
 
   for (let i = 0; i < productIds.length; i++) {
     const productId = productIds[i];
