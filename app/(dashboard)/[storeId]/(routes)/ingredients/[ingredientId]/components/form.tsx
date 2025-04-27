@@ -143,7 +143,7 @@ export const IngredientForm: React.FC<ingredientFormProps> = ({
                     disabled={loading}
                     onChange={(url) => field.onChange(url)}
                     onRemove={() => field.onChange("")}
-                    maxFiles={1}
+                    maxFiles={3}
                   />
                 </FormControl>
                 <FormMessage />
