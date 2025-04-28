@@ -44,10 +44,12 @@ export async function POST(
     const ingredient = await db.ingredient.create({
       data: {
         name,
-        image: {
-          createMany: image.map((img: { url: string }) => ({
-            url: img.url,
-          })),
+        images: {
+          createMany: {
+            data: image.map((img: { url: string }) => ({
+              url: img.url,
+            })),
+          },
         },
         description,
         storeId,
