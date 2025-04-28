@@ -185,7 +185,7 @@ export const VariantForm: React.FC<variantFormProps> = ({
                       );
                       field.onChange(updatedValue);
                     }}
-                    maxFiles={3}
+                    maxFiles={5}
                   />
                 </FormControl>
                 <FormMessage />

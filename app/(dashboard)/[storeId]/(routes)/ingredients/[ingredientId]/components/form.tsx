@@ -58,7 +58,7 @@ export const IngredientForm: React.FC<ingredientFormProps> = ({
       ? {
           ...initialData,
           image: initialData.images
-            ? [{ url: String(initialData.images) }]
+            ? [{ url: initialData.images[0].url  }]
             : [],
         }
       : {
