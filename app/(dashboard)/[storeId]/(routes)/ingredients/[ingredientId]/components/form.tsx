@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
-import { Ingredient } from "@prisma/client";
+import { Image, Ingredient } from "@prisma/client";
 import { ingredientFormSchema } from "@/schemas";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,7 +26,11 @@ import { AlertModal } from "@/components/modals/alert-modal";
 import { ImageUpload } from "@/components/ui/image-upload-product";
 
 interface ingredientFormProps {
-  initialData: Ingredient | null;
+  initialData:
+    | (Ingredient & {
+        images: Image[];
+      })
+    | null;
 }
 type ingredientFormValues = z.infer<typeof ingredientFormSchema>;
 
@@ -53,8 +57,8 @@ export const IngredientForm: React.FC<ingredientFormProps> = ({
     defaultValues: initialData
       ? {
           ...initialData,
-          image: initialData.image
-            ? [{ url: String(initialData.image) }]
+          image: initialData.images
+            ? [{ url: String(initialData.images) }]
             : [],
         }
       : {

@@ -9,7 +9,11 @@ const ingredientPage = async (props: ingredientProps) => {
   const ingredient = await db.ingredient.findUnique({
     where: {
       id: ingredientId,
+      
     },
+    include:{
+      images: true,
+    }
   });
   return (
     <div className="mt-8 flex-col">
