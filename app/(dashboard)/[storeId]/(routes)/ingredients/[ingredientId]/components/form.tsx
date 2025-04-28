@@ -50,11 +50,18 @@ export const IngredientForm: React.FC<ingredientFormProps> = ({
 
   const form = useForm<ingredientFormValues>({
     resolver: zodResolver(ingredientFormSchema),
-    defaultValues: initialData || {
-      name: "",
-      images: [],
-      description: "",
-    },
+    defaultValues: initialData
+      ? {
+          ...initialData,
+          image: initialData.image
+            ? [{ url: String(initialData.image) }]
+            : [],
+        }
+      : {
+          name: "",
+          image: [],
+          description: "",
+        },
   });
 
   const onSubmit = async (values: ingredientFormValues) => {
@@ -132,7 +139,7 @@ export const IngredientForm: React.FC<ingredientFormProps> = ({
         >
           <FormField
             control={form.control}
-            name="images"
+            name="image"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Ingredient Image</FormLabel>

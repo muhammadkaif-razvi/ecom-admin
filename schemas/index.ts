@@ -20,7 +20,7 @@ export const ingredientFormSchema = z.object({
     .string()
     .min(1, "Name must be min 2 characters")
     .max(45, "Name cannot be longer than 30 characters"),
-  images: z
+  image: z
     .array(z.object({ url: z.string() }))
     .min(1, "At least one image is required")
     .max(3, "Maximum 6 images allowed"),

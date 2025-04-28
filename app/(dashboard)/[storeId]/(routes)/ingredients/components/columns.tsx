@@ -7,7 +7,7 @@ export type ingredientColumn = {
   id: string;
   name: string;
   description: string;
-  image: string;
+  images: string[];
   createdAt: string;
 };
 
@@ -16,16 +16,20 @@ export const columns: ColumnDef<ingredientColumn>[] = [
     accessorKey: "image",
     header: "Image",
     cell: ({ row }) => {
-      const imageUrl = row.original.image; 
+      const imageUrl = row.original.images[0];
+
       return (
-        <img
-          src={imageUrl}
-          alt="Image"
-          className="h-12 w-12 object-cover rounded"
-        />
+        imageUrl && (
+          <img
+            src={imageUrl}
+            alt={row.original.name}
+            className="h-11 w-11 rounded-full"
+          />
+        )
       );
+      }
     },
-  },  
+  
   {
     accessorKey: "name",
     header: "Name",

@@ -13,7 +13,9 @@ const ingredientsPage = async ({
     where: {
       storeId: storeId,
     },
-   
+   include: {
+      images: true, 
+    },
     orderBy: {
       createdAt: "desc",
     },
@@ -22,8 +24,8 @@ const ingredientsPage = async ({
   const formattedingredients: ingredientColumn[] = ingredients.map((item) => ({
     id: item.id,
     name: item.name,
-    image:item.image,
-    description:item.description,
+    images: item.images.map((image) => image.url) ,
+    description: item.description,
     createdAt: format(item.createdAt, "MMMM do, yyyy"),
   }));
 

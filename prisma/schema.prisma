@@ -157,7 +157,7 @@ model Combos {
 model Ingredient {
   id          String    @id @default(uuid())
   storeId     String
-  image       String
+  images Image[]
   name        String
   description String
   createdAt   DateTime  @default(now())
@@ -270,13 +270,15 @@ model Variant {
 
 model Image {
   id        String   @id @default(uuid())
-  productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String?
+  product   Product?  @relation(fields: [productId], references: [id], onDelete: Cascade)
   url       String
   cratedAt  DateTime @default(now())
   updatedAt DateTime @updatedAt
   Variant   Variant? @relation(fields: [variantId], references: [id])
   variantId String?
+  ingredientId String?
+  ingredient Ingredient? @relation(fields: [ingredientId], references: [id])
 
   @@index([productId])
   @@index([variantId])

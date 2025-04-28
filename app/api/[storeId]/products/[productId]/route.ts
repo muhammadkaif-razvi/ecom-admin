@@ -111,7 +111,6 @@ export async function PATCH(
       data: {
         name,
         description,
-
         categoryId,
         ...(faceId ? { faceId } : {}),
         ...(hairId ? { hairId } : {}),

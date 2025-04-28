@@ -17,6 +17,9 @@ export async function GET(
       where: {
         id: ingredientId,
       },
+      include: {
+        images: true,
+      },
     });
     return NextResponse.json(ingredient);
   } catch (error) {
@@ -65,16 +68,29 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 403 });
     }
 
-    const ingredient = await db.ingredient.updateMany({
-      where: {
-        id: ingredientId,
-      },
+    // Update ingredient
+    const ingredient = await db.ingredient.update({
+      where: { id: ingredientId },
       data: {
         name,
-        image,
         description,
       },
     });
+
+    // Handle images separately
+    await db.image.deleteMany({
+      where: {
+        ingredientId,
+      },
+    });
+
+    await db.image.createMany({
+      data: image.map((img: { url: string }) => ({
+        url: img.url,
+        ingredientId,
+      })),
+    });
+
     return NextResponse.json(ingredient);
   } catch (error) {
     console.log("[ingredient_PATCH]", error);
