@@ -18,6 +18,13 @@ export async function GET(
       include: {
         images: true,
         category: true,
+        variants: {
+          include: {
+            images: true,
+            ingredients: true,
+            product: true,
+          },
+        },
         face: true,
         hair: true,
         makeup: true,

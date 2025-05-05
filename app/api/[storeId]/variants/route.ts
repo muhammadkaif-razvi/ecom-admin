@@ -112,6 +112,7 @@ export async function GET(
       include: {
         images: true,
         ingredients: true,
+        product: true,
       },
       orderBy: {
         createdAt: "desc",

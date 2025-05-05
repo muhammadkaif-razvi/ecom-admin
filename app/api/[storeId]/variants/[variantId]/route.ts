@@ -17,6 +17,7 @@ export async function GET(
       include: {
         images: true,
         ingredients: true,
+        product: true,
       },
     });
 
@@ -92,7 +93,12 @@ export async function PATCH(
         productId,
         variantsepQuant,
         inventory,
-        ingredients,
+        ingredients: {
+          set: [], 
+          connect: ingredients.map((ingredientId: string) => ({
+            id: ingredientId,
+          })),
+        },
       },
     });
     const variant = await db.variant.update({

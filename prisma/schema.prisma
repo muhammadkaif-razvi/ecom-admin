@@ -201,7 +201,6 @@ model Product {
   isBestseller Boolean @default(false)
   isFeatured   Boolean @default(false)
   isArchived   Boolean @default(false)
-
   storeId    String
   store      Store    @relation("StoreToProduct", fields: [storeId], references: [id])
   categoryId String
@@ -210,7 +209,6 @@ model Product {
   variants    Variant[]
 
   images Image[]
-
   faceId       String?
   hairId       String?
   makeupId     String?

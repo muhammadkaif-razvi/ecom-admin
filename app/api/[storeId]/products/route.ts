@@ -149,7 +149,13 @@ export async function GET(
         combos: true,
         ingredient: true,
         fragrance: true,
-        price: true,
+        variants: {
+          include: {
+            images: true,
+            ingredients: true,
+            product: true,
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",
