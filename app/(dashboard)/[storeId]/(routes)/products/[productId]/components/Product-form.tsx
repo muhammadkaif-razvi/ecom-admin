@@ -212,7 +212,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                       );
                       field.onChange(updatedValue);
                     }}
-                    maxFiles={3}
+                    maxFiles={4}
                   />
                 </FormControl>
                 <FormMessage />

@@ -79,6 +79,9 @@ export async function GET(
       where: {
         storeId,
       },
+      include: {
+        images: true,
+      }
     });
 
     return NextResponse.json(ingredients);

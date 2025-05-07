@@ -15,7 +15,7 @@ export type ProductColumn = {
   isNewLaunch: boolean;
   isBestseller: boolean;
   variantName: string;
-  variantPrice:  string;
+  variantPrice: string;
   variantQuantity: string;
   createdAt: string;
 };
@@ -37,12 +37,27 @@ export const columns: ColumnDef<ProductColumn>[] = [
   },
   {
     accessorKey: "name",
-    header: "Name",
-  },
+    header: () => <div style={{ minWidth: '200px' }}>Name</div>,
+    cell: ({ row }) => (
+      <div style={{ minWidth: '200px' }}>
+        {row.getValue("name")}
+      </div>
+    ),
+  }
+  ,
   {
     accessorKey: "description",
     header: "Description",
-  },
+    cell: ({ row }) => {
+      const desc = row.getValue("description") as string;
+      const words = desc.split(" ");
+      const shortDesc = words.length > 10 ? words.slice(0, 10).join(" ") + "..." : desc;
+      return (
+        <div className="min-w-[200px]">{shortDesc}</div>
+      );
+    }
+  }
+  ,
   {
     accessorKey: "category",
     header: "Category",
@@ -70,14 +85,59 @@ export const columns: ColumnDef<ProductColumn>[] = [
   {
     accessorKey: "variantName",
     header: "Variant Name",
+    cell: ({ row }) => {
+      const variantNames = row.original.variantName.split(",");
+      return (
+        <div className="flex flex-wrap gap-1 min-w-[200px] ">
+          {variantNames.map((variantName, index) => (
+            <span
+              key={index}
+              className="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600"
+            >
+              {variantName}
+            </span>
+          ))}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "variantPrice",
     header: "Variant Price",
+    cell: ({ row }) => {
+      const variantNames = row.original.variantPrice.split(",");
+      return (
+        <div className="flex flex-wrap gap-1 min-w-[50px] ">
+          {variantNames.map((variantName, index) => (
+            <span
+              key={index}
+              className="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600"
+            >
+              {variantName}
+            </span>
+          ))}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "variantQuantity",
     header: "Variant Quantity",
+    cell: ({ row }) => {
+      const variantNames = row.original.variantQuantity.split(",");
+      return (
+        <div className="flex flex-wrap gap-1 min-w-[110px] ">
+          {variantNames.map((variantName, index) => (
+            <span
+              key={index}
+              className="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600"
+            >
+              {variantName}
+            </span>
+          ))}
+        </div>
+      );
+    },
   },
 
   // {
@@ -98,6 +158,7 @@ export const columns: ColumnDef<ProductColumn>[] = [
   {
     accessorKey: "createdAt",
     header: "Date",
+    cell: ({ row }) => <div className="min-w-[100px]">{row.getValue("createdAt")}</div>,
   },
   {
     id: "actions",

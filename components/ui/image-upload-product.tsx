@@ -113,7 +113,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
             <Button
               type="button"
               disabled={disabled}
-              variant="secondary"
+              variant={"secondary"}
               onClick={() => open()}
             >
               <ImagePlus className="h-4 w-4 mr-2" />
