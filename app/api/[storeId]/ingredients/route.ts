@@ -78,6 +78,7 @@ export async function GET(
     const ingredients = await db.ingredient.findMany({
       where: {
         storeId,
+        
       },
       include: {
         images: true,

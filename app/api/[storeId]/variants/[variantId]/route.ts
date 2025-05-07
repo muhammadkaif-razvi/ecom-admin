@@ -18,7 +18,11 @@ export async function GET(
         images: true,
         ingredients: {
           include: {
-            images: true,
+            images: {
+              select: {
+                url: true,
+              },
+            },
           },
         },
         product: true,
