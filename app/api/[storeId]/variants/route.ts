@@ -111,7 +111,11 @@ export async function GET(
       },
       include: {
         images: true,
-        ingredients: true,
+        ingredients: {
+          include: {
+            images: true,
+          },
+        },
         product: true,
       },
       orderBy: {

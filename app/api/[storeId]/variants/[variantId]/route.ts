@@ -16,7 +16,11 @@ export async function GET(
       where: { id: variantId },
       include: {
         images: true,
-        ingredients: true,
+        ingredients: {
+          include: {
+            images: true,
+          },
+        },
         product: true,
       },
     });
