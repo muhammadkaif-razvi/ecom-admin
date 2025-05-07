@@ -113,11 +113,7 @@ export async function GET(
         images: true,
         ingredients: {
           include: {
-            images: {
-              select: {
-                url: true,
-              },
-            },
+            images: true,
           },
         },
         product: true,

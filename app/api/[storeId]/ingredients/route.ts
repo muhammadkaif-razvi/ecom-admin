@@ -65,11 +65,13 @@ export async function POST(
 }
 
 export async function GET(
-  _req: Request,
+  req: Request,
   { params }: { params: Promise<{ storeId: string }> }
 ) {
   try {
     const { storeId } = await params;
+    const { searchParams } = new URL(req.url);
+    const varientId = searchParams.get("varientId") || undefined;
 
     if (!storeId) {
       return new NextResponse("Store Id is required", { status: 400 });
@@ -78,11 +80,15 @@ export async function GET(
     const ingredients = await db.ingredient.findMany({
       where: {
         storeId,
-        
+        Variant: {
+          some: {
+            id: varientId,
+          },
+        },
       },
       include: {
         images: true,
-      }
+      },
     });
 
     return NextResponse.json(ingredients);
