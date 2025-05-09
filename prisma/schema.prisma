@@ -314,8 +314,9 @@ model OrderItem {
 }
 
 model Customer {
-  id        String   @id @default(uuid())
-  email     String   
+  id        String    @id
+  name      String
+  email     String   @unique
   phone     String   
   address   String
   orders    Order[]  // One customer can have many orders
