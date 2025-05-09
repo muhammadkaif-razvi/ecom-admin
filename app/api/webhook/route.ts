@@ -19,18 +19,6 @@ export async function POST(req: Request) {
   }
 
   const session = event.data.object as Stripe.Checkout.Session;
-  const address = session.customer_details?.address;
-
-  const addressComponents = [
-    address?.line1,
-    address?.line2,
-    address?.city,
-    address?.state,
-    address?.postal_code,
-    address?.country,
-  ].filter(Boolean);
-
-  const addressString = addressComponents.filter((c) => c !== null).join(", ");
 
   if (event.type === "checkout.session.completed") {
     const order = await db.order.update({
@@ -39,24 +27,24 @@ export async function POST(req: Request) {
       },
       data: {
         isPaid: true,
-        address: addressString,
-        phone: session?.customer_details?.phone || "",
       },
       include: {
         orderItems: true,
       },
     });
 
-    const productIds = order.orderItems.map((orderItem) => orderItem.productId);
+    const productIds = order.orderItems.map((orderItem) => orderItem.variantId);
 
-    await db.product.updateMany({
+    await db.variant.updateMany({
       where: {
         id: {
           in: productIds,
         },
       },
       data: {
-        isArchived: true,
+        inventory: {
+          decrement: 1,
+        },
       },
     });
   }
