@@ -77,7 +77,7 @@ export async function POST(
   }
 
   const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
-  const orderItemsData: any[] = [];
+  const orderItemsData = [];
 
   variants.forEach((variant, index) => {
     const quantity = quantities[index];
