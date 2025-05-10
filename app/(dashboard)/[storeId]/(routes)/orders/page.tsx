@@ -1,24 +1,29 @@
 import { db } from "@/lib/db";
 import { format } from "date-fns";
-import {  OrderClient } from "./components/client";
+import { OrderClient } from "./components/client";
 import { OrderColumn } from "./components/columns";
 import { formatter } from "@/lib/utils";
+
 const OrderPage = async ({
   params,
 }: {
-  params: Promise<{ storeId: string }>;
+  params: { storeId: string };
 }) => {
-  const { storeId } = await params;
+  const { storeId } = params;
 
   const orders = await db.order.findMany({
     where: {
       storeId,
     },
     include: {
+      customer: true,
       orderItems: {
         include: {
-          product: true,
-          variant: true,
+          variant: {
+            include: {
+              images: true, 
+            },
+          },
         },
       },
     },
@@ -29,13 +34,18 @@ const OrderPage = async ({
 
   const formattedOrders: OrderColumn[] = orders.map((item) => ({
     id: item.id,
-    email: item.email,
-    phone: item.phone,
-    address: item.address,
-    products: item.orderItems.map((orderItem) => orderItem.product.name).join(", "),
-    totalPrice: formatter.format(item.orderItems.reduce((total, orderItem) => {
-      return total + Number(orderItem.variant.price) * orderItem.quantity;
-    }, 0)),
+    image: item.orderItems[0]?.variant.images[0]?.url || "",
+    email: item.customer.email,
+    phone: item.customer.phone,
+    address: item.customer.address,
+    products: item.orderItems
+      .map((orderItem) => orderItem.variant.name)
+      .join(", "),
+    totalPrice: formatter.format(
+      item.orderItems.reduce((total, orderItem) => {
+        return total + Number(orderItem.variant.price) * orderItem.quantity;
+      }, 0)
+    ),
     isPaid: item.isPaid,
     createdAt: format(item.createdAt, "MMMM do, yyyy"),
   }));
