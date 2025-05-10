@@ -15,15 +15,11 @@ export async function getGraphRevenue(storeId: string): Promise<GraphData[]> {
       include: {
         orderItems: {
           include: {
-            product: {
-              include: {
-                variants: {
-                  select: {
-                    price: true,
-                  },
-                },
-              },
-            },
+            variant:{
+              select:{
+                price: true
+              }
+            }
           },
         },
       },
@@ -48,11 +44,8 @@ export async function getGraphRevenue(storeId: string): Promise<GraphData[]> {
       const month = order.createdAt.getMonth(); // 0 for Jan, 11 for Dec
       let orderTotal = 0;
       for (const item of order.orderItems) {
-        if (item.product?.variants.length > 0) {
-          // Still assuming we take the price of the first variant.
-          // Ideally, you'd fetch the price from the specific variant
-          // associated with the order item at the time of purchase.
-          orderTotal += item.product.variants[0].price.toNumber();
+        if (item.variant) {
+          orderTotal += item.variant.price.toNumber();
         }
       }
       graphData[month].total += orderTotal;
