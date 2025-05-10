@@ -7,9 +7,9 @@ import { formatter } from "@/lib/utils";
 const OrderPage = async ({
   params,
 }: {
-  params: { storeId: string };
+  params: Promise<{ storeId: string }>;
 }) => {
-  const { storeId } = params;
+  const { storeId } = await params;
 
   const orders = await db.order.findMany({
     where: {
