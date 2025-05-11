@@ -4,13 +4,13 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   _req: Request,
-  { params }: { params: { storeId: string; customerId: string } }
+  { params }: { params: Promise<{ storeId: string; customerId: string }> }
 ) {
   try {
     const user = await currentUser();
     const userId = user?.id;
 
-    const { storeId, customerId } = params;
+    const { storeId, customerId } = await params;
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
