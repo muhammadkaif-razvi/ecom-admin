@@ -304,6 +304,7 @@ model Order {
 model OrderItem {
   id        String  @id @default(uuid())
   orderId   String
+  status    DeliveryStatus   @default(Placed)
   order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   variantId String
@@ -322,6 +323,12 @@ model Customer {
   orders    Order[]  // One customer can have many orders
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+enum DeliveryStatus {
+  Placed       
+  Packed     
+  Shipped     
+  Delivered     
 }
 
 
