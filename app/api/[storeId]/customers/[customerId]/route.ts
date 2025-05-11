@@ -32,7 +32,7 @@ export async function GET(
       return new NextResponse("Unauthorized", { status: 403 });
     }
 
-    // Fetch orders by customer ID and include order items with status
+
     const orders = await db.order.findMany({
       where: {
         storeId,
@@ -42,6 +42,14 @@ export async function GET(
         orderItems: {
           include: {
             variant: true,
+          },
+        },
+        customer: {
+          select: {
+            name: true,
+            email: true,
+            phone: true,
+            address: true,
           },
         },
       },
