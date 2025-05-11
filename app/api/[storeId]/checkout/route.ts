@@ -67,7 +67,7 @@ export async function POST(
       },
     },
     include: {
-      product: true,
+      images: true,
     },
   });
 
@@ -87,7 +87,11 @@ export async function POST(
       price_data: {
         currency: "INR",
         product_data: {
-          name: `${variant.product.name} - ${variant.name}`,
+          images: [variant.images[0].url],
+          name: `${variant.name}`,
+          metadata: {
+            variantId: variant.id,
+          },
         },
         unit_amount: variant.price.toNumber() * 100,
       },
@@ -117,6 +121,9 @@ export async function POST(
   const session = await stripe.checkout.sessions.create({
     line_items,
     customer_email: email,
+  phone_number_collection: {
+    enabled: phone,
+  },
     mode: "payment",
     success_url: `${process.env.FRONTEND_STORE_URL}/cart?success=1`,
     cancel_url: `${process.env.FRONTEND_STORE_URL}/cart?cancel=1`,

@@ -1,5 +1,6 @@
 "use client";
 
+import { Image } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import React from "react";
 
@@ -10,6 +11,7 @@ export type OrderStatus = typeof ORDER_STATUSES[number];
 // Define row type
 export type OrderColumn = {
   id: string;
+  image: Image[];
   phone: string;
   email: string;
   address: string;
