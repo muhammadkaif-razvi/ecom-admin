@@ -14,7 +14,7 @@ export type OrderColumn = {
   email: string;
   address: string;
   isPaid: boolean;
-  products: string[]; // ⬅ Changed from string to string[] for clarity
+  products: string[]; // each product name
   totalPrice: string;
   createdAt: string;
   orderStatus: OrderStatus;
@@ -46,14 +46,15 @@ export const columns: ColumnDef<OrderColumn>[] = [
         const newStatus = e.target.value as OrderStatus;
 
         try {
-          // Update the status on the backend
           await fetch(`/api/orders/${orderId}`, {
             method: "PATCH",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+            },
             body: JSON.stringify({ orderStatus: newStatus }),
           });
 
-          // You can add a toast or re-fetch logic here if needed
+          // Optional: Add toast or trigger re-fetch here
         } catch (error) {
           console.error("Failed to update order status:", error);
         }
@@ -63,7 +64,7 @@ export const columns: ColumnDef<OrderColumn>[] = [
         <select
           value={currentStatus}
           onChange={handleChange}
-          className="text-sm border px-2 py-1 rounded bg-white"
+          className="text-sm border border-gray-300 px-2 py-1 rounded bg-white"
         >
           {ORDER_STATUSES.map((status) => (
             <option key={status} value={status}>
