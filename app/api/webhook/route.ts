@@ -1,7 +1,11 @@
 import { db } from "@/lib/db";
 import { headers } from "next/headers";
-import { stripe } from "@/lib/stripe";
 import Stripe from "stripe";
+import { NextResponse } from "next/server";
+
+const stripe = new Stripe(process.env.STRIPE_API_KEY!, {
+  apiVersion: "2025-03-31.basil",
+});
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -16,7 +20,7 @@ export async function POST(req: Request) {
       process.env.STRIPE_WEBHOOK_SECRET!
     );
   } catch (error) {
-    return new Response(`Webhook Error: ${error}`, { status: 400 });
+    return new NextResponse(`Webhook Error: ${error}`, { status: 400 });
   }
 
   const session = event.data.object as Stripe.Checkout.Session;
