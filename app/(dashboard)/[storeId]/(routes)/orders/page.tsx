@@ -17,9 +17,6 @@ const OrderPage = async ({
     include: {
       customer: true,
       orderItems: {
-        select: {
-          status: true,
-        },
         include: {
           variant: {
             include: {
