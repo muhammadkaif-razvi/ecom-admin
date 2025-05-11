@@ -81,6 +81,7 @@ export async function POST(
 
   variants.forEach((variant, index) => {
     const quantity = quantities[index];
+    
     line_items.push({
       quantity,
       price_data: {
@@ -115,6 +116,7 @@ export async function POST(
 
   const session = await stripe.checkout.sessions.create({
     line_items,
+    customer_email: email,
     mode: "payment",
     success_url: `${process.env.FRONTEND_STORE_URL}/cart?success=1`,
     cancel_url: `${process.env.FRONTEND_STORE_URL}/cart?cancel=1`,
