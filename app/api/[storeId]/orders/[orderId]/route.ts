@@ -7,13 +7,13 @@ import { NextResponse } from "next/server";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { storeId: string; orderId: string } }
+  { params }: { params: Promise<{ storeId: string; orderId: string }> }
 ) {
   try {
     const user = await currentUser();
     const userId = user?.id;
 
-    const { storeId, orderId } = params;
+    const { storeId, orderId } = await params;
     const body = await req.json();
     const { deliveryStatus } = body;  // assuming "deliveryStatus" comes from the body
 
