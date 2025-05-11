@@ -46,7 +46,7 @@ const OrderPage = async ({
           ? "Shipped"
           : itemStatuses.includes("Delivered")
             ? "Delivered"
-            : "Unknown"; // Default status if none match
+            : "Placed"; // Default fallback value
 
     return {
 
@@ -65,7 +65,7 @@ const OrderPage = async ({
       ),
       isPaid: item.isPaid,
       createdAt: format(item.createdAt, "MMMM do, yyyy"),
-      orderStatus: item.orderItems[0].status, // Order-level status
+      orderStatus: orderStatus, // Order-level status
     }
   });
 
