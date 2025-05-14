@@ -15,11 +15,11 @@ export async function getGraphRevenue(storeId: string): Promise<GraphData[]> {
       include: {
         orderItems: {
           include: {
-            variant:{
-              select:{
-                price: true
-              }
-            }
+            variant: {
+              select: {
+                price: true,
+              },
+            },
           },
         },
       },
@@ -44,8 +44,9 @@ export async function getGraphRevenue(storeId: string): Promise<GraphData[]> {
       const month = order.createdAt.getMonth(); // 0 for Jan, 11 for Dec
       let orderTotal = 0;
       for (const item of order.orderItems) {
-        if (item.variant) {
-          orderTotal += item.variant.price.toNumber();
+        if (item.variant?.price && item.quantity) {
+          // Multiply price by quantity
+          orderTotal += item.variant.price.toNumber() * item.quantity;
         }
       }
       graphData[month].total += orderTotal;
@@ -74,3 +75,4 @@ export async function getGraphRevenue(storeId: string): Promise<GraphData[]> {
     }
   }
 }
+

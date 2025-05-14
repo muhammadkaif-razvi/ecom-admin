@@ -56,3 +56,44 @@ export async function PATCH(
     return new NextResponse("Internal error", { status: 500 });
   }
 }
+
+
+export async function DELETE(
+  _req: Request,
+  { params }: { params: Promise<{ storeId: string; orderId: string }> }
+) {
+  try {
+    const user = await currentUser();
+    const userId = user?.id;
+
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+    const { storeId } = await params;
+    const { orderId } = await params;
+
+    if (!orderId) {
+      return new NextResponse("order id is required", { status: 400 });
+    }
+
+    const storeByUserId = await db.store.findFirst({
+      where: {
+        id: storeId,
+        userId,
+      },
+    });
+    if (!storeByUserId) {
+      return new NextResponse("Unauthorized", { status: 403 });
+    }
+
+    const ingredient = await db.order.deleteMany({
+      where: {
+        id: orderId,
+      },
+    });
+    return NextResponse.json(ingredient);
+  } catch (error) {
+    console.log("[ingredient_DELETE]", error);
+    return new NextResponse("Internal error", { status: 500 });
+  }
+}

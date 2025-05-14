@@ -49,7 +49,7 @@ const OrderPage = async ({
 
 
       id: item.id,
-      image: item.orderItems[0]?.variant.images || [],
+      images: item.orderItems[0]?.variant.images || [],
       email: item.customer.email,
       phone: item.customer.phone,
       address: item.customer.address,

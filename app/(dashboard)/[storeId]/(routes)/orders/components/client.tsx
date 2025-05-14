@@ -11,7 +11,6 @@ interface OrderClientProps {
 
 export const OrderClient: React.FC<OrderClientProps> = ({ data }) => {
 
-
   return (
     <>
       <div className=" mt-8 flex items-center justify-between">
@@ -21,7 +20,7 @@ export const OrderClient: React.FC<OrderClientProps> = ({ data }) => {
         />
       </div>
       <Separator />
-      <DataTable columns={columns} data={data} searchKey="products" />{" "}
+      <DataTable columns={columns} data={data} searchKey="email" />{" "}
     </>
   );
 };
