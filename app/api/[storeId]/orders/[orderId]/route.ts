@@ -15,8 +15,7 @@ export async function PATCH(
 
     const { storeId, orderId } = await params;
     const body = await req.json();
-    const { deliveryStatus } = body;  // assuming "deliveryStatus" comes from the body
-
+    const { deliveryStatus } = body;  
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }

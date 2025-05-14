@@ -24,7 +24,7 @@ export async function POST(
   { params }: { params: Promise<{ storeId: string }> }
 ) {
   const { storeId } = await params;
-  const { variantIds, quantities,id, name, email, phone, address } = await req.json();
+  const { variantIds, quantities,id, name, email, phone } = await req.json();
 
  if (!storeId) {
     return new NextResponse("Store Id is required", { status: 400 });
@@ -32,7 +32,7 @@ export async function POST(
   if(!id){
     return new NextResponse("Customer Id is required", { status: 400 });
   }
-  if(!name || !email || !phone || !address){
+  if(!name || !email || !phone ){
     return new NextResponse("Customer details is required", { status: 400 });
   }
 
@@ -55,7 +55,7 @@ export async function POST(
         name,
         email,
         phone,
-        address,
+        address :"",
       },
     });
   }
@@ -109,7 +109,7 @@ export async function POST(
       customerId: customer.id,
       email,
       phone,
-      address,
+      
       orderItems: {
         createMany: {
           data: orderItemsData,
