@@ -14,7 +14,7 @@ export function ModeToggle() {
   }, []);
 
   const toggleTheme = () => {
-    if (theme === "system") {
+    if (theme === "system" || theme === "dark") {
       setTheme("light");
     } else {
       setTheme("light");
