@@ -50,7 +50,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
       setOpen(false);
     }
   };
-  const onUpdate = async (data: any) => {
+  const onUpdate = async (data: { id: string; deliveryStatus: string } ) => {
     try {
       setLoading(true);
       await axios.patch(`/api/${params.storeId}/orders/${data.id}`, data);
