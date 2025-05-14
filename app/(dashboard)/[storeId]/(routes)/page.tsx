@@ -1,4 +1,3 @@
-"use client";
 
 import { getGraphRevenue } from "@/actions/get-graph-revenue";
 import { getSalesCount } from "@/actions/get-sales-count";
@@ -21,8 +20,8 @@ interface DashboardPageProps {
 async function DashboardPage(props: DashboardPageProps) {
   const params = await props.params;
   const { storeId } = await params;
-  const user = await currentUser();
 
+  const user = await currentUser();
   const totalRevenue = await getTotalRevenue(storeId);
   const salesCount = await getSalesCount(storeId);
   const stockCount = await getStockCount(storeId);
