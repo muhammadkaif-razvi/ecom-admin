@@ -1,16 +1,16 @@
 "use client";
 
 import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
-import { columns, OrderColumn } from "./columns";
+import {  OrderColumn } from "./columns";
 import {
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Copy, Edit, Home, MoreHorizontal, Package, Trash, Truck } from "lucide-react";
+import { Copy,  Home, MoreHorizontal, Package, Trash, Truck } from "lucide-react";
 import toast from "react-hot-toast";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
@@ -23,7 +23,6 @@ interface CellActionProps {
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
-  const router = useRouter();
   const params = useParams();
   const { update } = useSession();
 
@@ -98,27 +97,27 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
             <Copy className=" mr-2 h-4 w-4" />
             Copy Id
           </DropdownMenuLabel>
-  <DropdownMenuLabel
-  onClick={() => onUpdate({ id: data.id, deliveryStatus: "Packed" })}
-  className="flex flex-row items-center hover:bg-slate-400 cursor-pointer rounded-sm"
->
-  <Package className=" mr-2 h-4 w-4" />
-  Packed
-</DropdownMenuLabel>
-<DropdownMenuLabel
-  onClick={() => onUpdate({ id: data.id, deliveryStatus: "Shipped" })}
-  className="flex flex-row items-center hover:bg-slate-400 cursor-pointer rounded-sm "
->
-  <Truck className=" mr-2 h-4 w-4" />
-  Shipped
-</DropdownMenuLabel>
-<DropdownMenuLabel
-  onClick={() => onUpdate({ id: data.id, deliveryStatus: "Delivered" })}
-  className="flex flex-row items-center  hover:bg-slate-400 cursor-pointer  rounded-sm"
->
-  <Home className=" mr-2 h-4 w-4" />
-  Delivered
-</DropdownMenuLabel>
+          <DropdownMenuLabel
+            onClick={() => onUpdate({ id: data.id, deliveryStatus: "Packed" })}
+            className="flex flex-row items-center hover:bg-slate-400 cursor-pointer rounded-sm"
+          >
+            <Package className=" mr-2 h-4 w-4" />
+            Packed
+          </DropdownMenuLabel>
+          <DropdownMenuLabel
+            onClick={() => onUpdate({ id: data.id, deliveryStatus: "Shipped" })}
+            className="flex flex-row items-center hover:bg-slate-400 cursor-pointer rounded-sm "
+          >
+            <Truck className=" mr-2 h-4 w-4" />
+            Shipped
+          </DropdownMenuLabel>
+          <DropdownMenuLabel
+            onClick={() => onUpdate({ id: data.id, deliveryStatus: "Delivered" })}
+            className="flex flex-row items-center  hover:bg-slate-400 cursor-pointer  rounded-sm"
+          >
+            <Home className=" mr-2 h-4 w-4" />
+            Delivered
+          </DropdownMenuLabel>
           <DropdownMenuLabel
             onClick={() => {
               setOpen(true);
