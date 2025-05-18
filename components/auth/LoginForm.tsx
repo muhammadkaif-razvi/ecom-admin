@@ -159,7 +159,7 @@ export const LoginForm = () => {
 
           <FormError message={error || urlError} />
           <FormSuccess message={success} />
-          <Button type="submit" className="w-full " disabled={isPending}>
+          <Button onClick={() =>  window.location.reload()} type="submit" className="w-full " disabled={isPending}>
             {isPending ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : showTwoFactor ? (
